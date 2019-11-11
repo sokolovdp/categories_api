@@ -24,5 +24,5 @@ class CategoryViewSet(ViewSet):
             return Response({'id': new_category.id})
 
     def retrieve(self, request, pk=None):
-        category = self.queryset.filter(id=int(pk)).first()
+        category = self.queryset.filter(id=pk).first()
         return Response(self.category_serializer(category).data)
