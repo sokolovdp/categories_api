@@ -2,7 +2,6 @@ from django.db import transaction, IntegrityError, DatabaseError
 from rest_framework.viewsets import ViewSet
 from rest_framework.response import Response
 from rest_framework.exceptions import NotAcceptable
-from rest_framework import status
 
 from .models import Category, PostCategorySerializer, FullResponseCategorySerializer
 
