@@ -2,6 +2,11 @@ from django.db import models
 from rest_framework import serializers
 
 
+class Relatives(models.Manager):
+    def get_queryset(self):
+        return super().get_queryset().select_related('parent').prefetch_related('children')
+
+
 class Category(models.Model):
     name = models.CharField(max_length=128)
     parent = models.ForeignKey(
@@ -9,6 +14,9 @@ class Category(models.Model):
         null=True,
         related_name='children',
         on_delete=models.CASCADE)
+
+    objects = models.Manager()
+    relatives = Relatives()
 
 
 class PostCategorySerializer(serializers.ModelSerializer):
