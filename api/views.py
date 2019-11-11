@@ -2,7 +2,8 @@ from django.db import transaction, IntegrityError, DatabaseError
 from rest_framework.viewsets import ViewSet
 from rest_framework.response import Response
 
-from .models import Category, PostCategorySerializer, FullResponseCategorySerializer
+from .models import Category, PostCategorySerializer, GetCategorySerializer,  FullResponseCategorySerializer
+
 
 
 class CategoryViewSet(ViewSet):
@@ -16,18 +17,13 @@ class CategoryViewSet(ViewSet):
         return Response({'id': new_category.id})
 
     def retrieve(self, request, pk=None):
-        category = Category.relatives.filter(id=pk).first()
-        if not category:
-            return Response({})
-        parent = category.parent
-        children = list(category.children.all())
-        siblings = list(Category.objects.filter(parent_id=(parent.id if parent else None)).exclude(id=pk))
+        head_id, head_name, parents, children, siblings = Category.relatives.load(pk=pk)
         result = {
-            'id': category.id,
-            'name': category.name,
-            'parents': [parent] if parent else [],
+            'id': head_id,
+            'name': head_name,
+            'parents': parents,
             'children': children,
             'siblings': siblings
         }
-        return Response(FullResponseCategorySerializer(result).data)
 
+        return Response(FullResponseCategorySerializer(result).data)
