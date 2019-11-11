@@ -2,8 +2,7 @@ from django.db import transaction, IntegrityError, DatabaseError
 from rest_framework.viewsets import ViewSet
 from rest_framework.response import Response
 
-from .models import Category, PostCategorySerializer, GetCategorySerializer,  FullResponseCategorySerializer
-
+from .models import Category, PostCategorySerializer, FullResponseCategorySerializer
 
 
 class CategoryViewSet(ViewSet):

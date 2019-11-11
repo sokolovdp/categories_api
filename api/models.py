@@ -57,7 +57,6 @@ class Category(models.Model):
         related_name='children',
         on_delete=models.CASCADE)
 
-    objects = models.Manager()
     relatives = Relatives()
 
 
