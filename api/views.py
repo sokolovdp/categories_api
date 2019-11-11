@@ -1,7 +1,5 @@
-from django.db import transaction, IntegrityError, DatabaseError
 from rest_framework.viewsets import ViewSet
 from rest_framework.response import Response
-from rest_framework.exceptions import NotAcceptable
 
 from .models import Category, PostCategorySerializer, FullResponseCategorySerializer
 
@@ -13,14 +11,8 @@ class CategoryViewSet(ViewSet):
     def create(self, request):
         serializer = self.category_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
-        try:
-            with transaction.atomic():
-                new_category = Category(**serializer.validated_data)
-                new_category.save()
-        except (IntegrityError, DatabaseError, Exception) as e:
-            raise NotAcceptable(detail=str(e))
-        else:
-            return Response({'id': new_category.id})
+        category = serializer.save()
+        return Response({'id': category.id})
 
     def retrieve(self, request, pk=None):
         category = self.queryset.filter(id=pk).first()
