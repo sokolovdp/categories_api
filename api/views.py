@@ -4,12 +4,12 @@ from rest_framework.response import Response
 from rest_framework.exceptions import NotAcceptable
 from rest_framework import status
 
-from .models import Category, CategorySerializer, CategoryResponseSerializer
+from .models import Category, PostCategorySerializer, FullResponseCategorySerializer
 
 
 class CategoryViewSet(ViewSet):
     queryset = Category.objects.select_related('parent').prefetch_related('children')
-    category_serializer = CategorySerializer
+    category_serializer = PostCategorySerializer
 
     def create(self, request):
         serializer = self.category_serializer(data=request.data)
@@ -40,5 +40,5 @@ class CategoryViewSet(ViewSet):
             'children': children,
             'siblings': siblings
         }
-        return Response(CategoryResponseSerializer(result).data)
+        return Response(FullResponseCategorySerializer(result).data)
 

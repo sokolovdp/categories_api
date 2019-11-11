@@ -11,21 +11,21 @@ class Category(models.Model):
         on_delete=models.CASCADE)
 
 
-class CategorySerializer(serializers.ModelSerializer):
+class PostCategorySerializer(serializers.ModelSerializer):
     class Meta:
         model = Category
         fields = ('name', 'parent')
 
 
-class ShortCategorySerializer(serializers.ModelSerializer):
+class GetCategorySerializer(serializers.ModelSerializer):
     class Meta:
         model = Category
         exclude = ('parent', )
 
 
-class CategoryResponseSerializer(serializers.Serializer):
+class FullResponseCategorySerializer(serializers.Serializer):
     id = serializers.IntegerField()
     name = serializers.CharField()
-    parents = ShortCategorySerializer(many=True)
-    children = ShortCategorySerializer(many=True)
-    siblings = ShortCategorySerializer(many=True)
+    parents = GetCategorySerializer(many=True)
+    children = GetCategorySerializer(many=True)
+    siblings = GetCategorySerializer(many=True)
