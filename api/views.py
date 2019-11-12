@@ -16,13 +16,7 @@ class CategoryViewSet(ViewSet):
         return Response({'id': new_category.id})
 
     def retrieve(self, request, pk=None):
-        head_id, head_name, parents, children, siblings = Category.relatives.load(pk=pk)
-        result = {
-            'id': head_id,
-            'name': head_name,
-            'parents': parents,
-            'children': children,
-            'siblings': siblings
-        }
-
+        categories = Category.relatives.load(pk=pk)
+        field_names = FullResponseCategorySerializer().fields
+        result = dict((k, v) for k, v in zip(field_names, categories))
         return Response(FullResponseCategorySerializer(result).data)
