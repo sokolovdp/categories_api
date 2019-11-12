@@ -16,7 +16,7 @@ class CategoryViewSet(ViewSet):
                 serializer.save()
         except IntegrityError:
             return Response(
-                {'error': 'DB integrity error, category with the same already exists'},
+                {'error': 'DB integrity error, category with the same name already exists'},
                 status=status.HTTP_400_BAD_REQUEST
             )
         except (DatabaseError, Exception) as e:
