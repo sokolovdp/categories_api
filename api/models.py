@@ -6,35 +6,27 @@ SQL_REQUEST = """
 WITH RECURSIVE
     head (id, name, parent_id, level) AS
         (
-            SELECT t.id, t.name, t.parent_id, 'head' AS LEVEL
-            FROM api_category AS t
-            WHERE t.id = {pk}
+            SELECT t.id, t.name, t.parent_id, 'head' AS LEVEL FROM api_category AS t WHERE t.id = {pk}
         ),
     children (id, name, parent_id, level) AS
         (
-            SELECT id, name, parent_id, level
-            FROM head
+            SELECT id, name, parent_id, level FROM head
             UNION ALL
             SELECT a.id, a.name, a.parent_id, 'children' AS LEVEL
-            FROM api_category AS a
-                     JOIN children AS c ON c.id = a.parent_id
+                FROM api_category AS a JOIN children AS c ON c.id = a.parent_id
         ),
     parents (id, name, parent_id, level) AS
         (
-            SELECT id, name, parent_id, 'parents' AS LEVEL
-            FROM api_category as a
-            WHERE a.id IS (SELECT parent_id FROM head)
+            SELECT id, name, parent_id, 'parents' AS LEVEL FROM api_category as a
+                WHERE a.id = (SELECT parent_id FROM head)
             UNION ALL
             SELECT a.id, a.name, a.parent_id, level
-            FROM api_category AS a
-                     JOIN parents ON parents.parent_id = a.id
+                FROM api_category AS a JOIN parents ON parents.parent_id = a.id
         ),
     siblings (id, name, parent_id, level) AS
         (
-            SELECT id, name, parent_id, 'siblings' AS LEVEL
-            FROM api_category
-            WHERE parent_id != (SELECT parent_id FROM api_category
-            WHERE id = {pk})
+            SELECT id, name, parent_id, 'siblings' AS LEVEL FROM api_category
+                WHERE parent_id = (SELECT parent_id FROM api_category WHERE id = {pk}) AND id != {pk}
         )
 select * from head
 UNION
@@ -56,15 +48,18 @@ class Relatives(models.Manager):
             cursor.execute(SQL_REQUEST.format(pk=pk))
             for row in cursor.fetchall():
                 category = self.model(id=row[0], name=row[1], parent_id=row[2])
-                if row[3] == 'head':
+                subquery = row[3]
+                if subquery == 'head':
                     head_id = category.id
                     head_name = category.name
-                elif row[3] == 'parents':
+                elif subquery == 'parents':
                     parents.append(category)
-                elif row[3] == 'children':
+                elif subquery == 'children':
                     children.append(category)
-                else:
+                elif subquery == 'siblings':
                     siblings.append(category)
+                else:
+                    continue
         return head_id, head_name, parents, children, siblings
 
 
