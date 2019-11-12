@@ -90,6 +90,8 @@ class CategoryTests(APITestCase):
         """
             Get category data by its ID
         """
-        url = '/categories/'
-        response = self.client.post(url, SOURCE_DATA, format='json')
-        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        for category_id in range(1, 16):
+            url = f'/categories/{category_id}/'
+            response = self.client.get(url, format='json')
+            self.assertEqual(response.status_code, status.HTTP_200_OK)
+
