@@ -1,7 +1,29 @@
-# categories_api - demo Django, DRF API services to shwo implementation of the Tree like database structure
+# Demo API based on Django's DRF rest API services to show implementation of the Tree like table structure in SQL database and AI to create and retrive data from it
 ## Run application
 ```text
 python manage.py runserver 8000
 ```
+## Model:
+```python
+class Category(models.Model):
+    name = models.CharField(max_length=128, unique=True)
+    parent = models.ForeignKey(
+        'self',
+        null=True,
+        related_name='children',
+        on_delete=models.CASCADE)
+    relatives = Relatives()
+```
+## API's points:
+```text
+​ POST /categories/
+```
+```text
+ GET /categories/<id>/​
+```
 
-## Models:
+##  Implementation notes
+API using recursive SQL queries returns both all ancestors (parents) and all descendants (children) of an element, plus its siblings (the same parent)
+
+## Postman collection to test API
+https://www.getpostman.com/collections/ea2dfb57228b08319c7c
