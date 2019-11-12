@@ -82,6 +82,5 @@ class CategoryTests(APITestCase):
             Create categories
         """
         url = '/categories/'
-        data = {}
         response = self.client.post(url, SOURCE_DATA, format='json')
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
