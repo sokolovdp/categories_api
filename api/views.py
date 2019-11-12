@@ -30,4 +30,7 @@ class CategoryViewSet(ViewSet):
         categories = Category.relatives.load(pk=pk)
         field_names = RetrieveCategoriesSerializer().fields
         result = dict((k, v) for k, v in zip(field_names, categories))
+        if result['id'] is None:
+            return Response({'error': f'wrong category id'}, status=status.HTTP_404_NOT_FOUND)
+
         return Response(RetrieveCategoriesSerializer(result).data)
