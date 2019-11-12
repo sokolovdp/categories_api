@@ -116,16 +116,15 @@ class CreateCategoriesSerializer:
             self.save_data(self.validated_data, None)
 
 
-class GetCategorySerializer(serializers.ModelSerializer):
+class OutputCategorySerializer(serializers.ModelSerializer):
     class Meta:
         model = Category
         exclude = ('parent',)
 
 
-# noinspection PyAbstractClass
 class RetrieveCategoriesSerializer(serializers.Serializer):
     id = serializers.IntegerField()
     name = serializers.CharField()
-    parents = GetCategorySerializer(many=True)
-    children = GetCategorySerializer(many=True)
-    siblings = GetCategorySerializer(many=True)
+    parents = OutputCategorySerializer(many=True)
+    children = OutputCategorySerializer(many=True)
+    siblings = OutputCategorySerializer(many=True)
