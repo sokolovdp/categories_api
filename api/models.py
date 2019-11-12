@@ -1,5 +1,6 @@
 from django.db import models, connection
 from rest_framework import serializers
+from rest_framework.exceptions import APIException, ValidationError
 
 # SQLite3 dialect !!!
 SQL_REQUEST = """
@@ -70,20 +71,55 @@ class Category(models.Model):
         null=True,
         related_name='children',
         on_delete=models.CASCADE)
-
     relatives = Relatives()
 
 
-class PostCategorySerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Category
-        fields = ('name', 'parent')
+class PostCategorySerializer:
+    @staticmethod
+    def create_record(name, parent_id):
+        new_category = Category(name=name, parent_id=parent_id)
+        new_category.save()
+        print(f'created record #{new_category.id}: {name} --> {parent_id}')
+        return new_category.id
+
+    def save_data(self, data, parent_id):
+        parent_id = self.create_record(data['name'], parent_id)
+        children = data.get('children', [])
+        for data in children:
+            self.save_data(data, parent_id)
+
+    def check_data(self, data):
+        if data.get('name') is None:
+            raise ValidationError('invalid data, key "name" is missing')
+        children = data.get('children', [])
+        if not isinstance(children, list):
+            raise ValidationError('invalid data, field "children" is not list type')
+        for data in children:
+            self.check_data(data)
+
+    def __init__(self, data: dict):
+        self.data = data
+        self.validated_data = None
+
+    def is_valid(self, raise_exception=True):
+        try:
+            self.check_data(self.data)
+        except ValidationError:
+            if raise_exception:
+                raise
+        else:
+            self.validated_data = self.data
+
+    def save(self):
+        if self.validated_data is None:
+            raise APIException('no valid data to save, run is_valid() method first!')
+        self.save_data(self.data, None)
 
 
 class GetCategorySerializer(serializers.ModelSerializer):
     class Meta:
         model = Category
-        exclude = ('parent', )
+        exclude = ('parent',)
 
 
 class FullResponseCategorySerializer(serializers.Serializer):

@@ -1,4 +1,4 @@
-from django.db import transaction, IntegrityError, DatabaseError
+from django.db import transaction
 from rest_framework.viewsets import ViewSet
 from rest_framework.response import Response
 
@@ -11,9 +11,8 @@ class CategoryViewSet(ViewSet):
         serializer = PostCategorySerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         with transaction.atomic():
-            new_category = Category(**serializer.validated_data)
-            new_category.save()
-        return Response({'id': new_category.id})
+            serializer.save()
+        return Response({})
 
     def retrieve(self, request, pk=None):
         categories = Category.relatives.load(pk=pk)
