@@ -12,6 +12,7 @@ class Category(models.Model):
         null=True,
         related_name='children',
         on_delete=models.CASCADE)
+    objects = models.Manager()
     relatives = Relatives()
 ```
 ## API's points:
