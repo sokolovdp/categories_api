@@ -65,7 +65,7 @@ class Relatives(models.Manager):
 
 
 class Category(models.Model):
-    name = models.CharField(max_length=128)
+    name = models.CharField(max_length=128, unique=True)
     parent = models.ForeignKey(
         'self',
         null=True,
@@ -74,12 +74,11 @@ class Category(models.Model):
     relatives = Relatives()
 
 
-class PostCategorySerializer:
+class CreateCategoriesSerializer:
     @staticmethod
     def create_record(name, parent_id):
         new_category = Category(name=name, parent_id=parent_id)
         new_category.save()
-        print(f'created record #{new_category.id}: {name} --> {parent_id}')
         return new_category.id
 
     def save_data(self, data, parent_id):
@@ -108,12 +107,13 @@ class PostCategorySerializer:
             if raise_exception:
                 raise
         else:
-            self.validated_data = self.data
+            self.validated_data = self.data.copy()
 
     def save(self):
         if self.validated_data is None:
             raise APIException('no valid data to save, run is_valid() method first!')
-        self.save_data(self.data, None)
+        else:
+            self.save_data(self.validated_data, None)
 
 
 class GetCategorySerializer(serializers.ModelSerializer):
@@ -122,7 +122,8 @@ class GetCategorySerializer(serializers.ModelSerializer):
         exclude = ('parent',)
 
 
-class FullResponseCategorySerializer(serializers.Serializer):
+# noinspection PyAbstractClass
+class RetrieveCategoriesSerializer(serializers.Serializer):
     id = serializers.IntegerField()
     name = serializers.CharField()
     parents = GetCategorySerializer(many=True)
