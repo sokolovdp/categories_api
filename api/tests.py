@@ -71,7 +71,7 @@ class CategoryTests(APITestCase):
 
     def test_create_categories_wrong_formats(self):
         """
-            Check if validation works
+            Check if API properly validate input data
         """
         url = '/categories/'
         data = {'test': 'invalid format'}
@@ -102,7 +102,7 @@ class CategoryTests(APITestCase):
 
     def test_get_invalid_category_id(self):
         """
-            Check if API poperly handle invalid category ids
+            Check if API properly handle invalid category ids
         """
         self.init_database()
 
