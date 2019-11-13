@@ -53,12 +53,8 @@ class Relatives(models.Manager):
                 if subquery == 'head':
                     head_id = category.id
                     head_name = category.name
-                elif subquery == 'parents':
-                    parents.append(category)
-                elif subquery == 'children':
-                    children.append(category)
-                elif subquery == 'siblings':
-                    siblings.append(category)
+                elif subquery in ('parents', 'children', 'siblings'):
+                    locals()[subquery].append(category)
                 else:
                     continue
         return head_id, head_name, parents, children, siblings
@@ -66,11 +62,9 @@ class Relatives(models.Manager):
 
 class Category(models.Model):
     name = models.CharField(max_length=128, unique=True)
-    parent = models.ForeignKey(
-        'self',
-        null=True,
-        related_name='children',
-        on_delete=models.CASCADE)
+    parent = models.ForeignKey('self', null=True, related_name='children', on_delete=models.CASCADE)
+
+    # Managers
     objects = models.Manager()
     relatives = Relatives()
 
