@@ -70,6 +70,9 @@ class Category(models.Model):
 
 
 class CreateCategoriesSerializer:
+    """
+        Emulates functionality of a DRF serializer
+    """
     @staticmethod
     def create_record(name, parent_id):
         new_category = Category(name=name, parent_id=parent_id)
