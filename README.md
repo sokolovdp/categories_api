@@ -7,13 +7,12 @@ python manage.py runserver 8000
 ```python
 class Category(models.Model):
     name = models.CharField(max_length=128, unique=True)
-    parent = models.ForeignKey(
-        'self',
-        null=True,
-        related_name='children',
-        on_delete=models.CASCADE)
+    parent = models.ForeignKey('self', null=True, related_name='children', on_delete=models.CASCADE)
+
+    # Managers
     objects = models.Manager()
     relatives = Relatives()
+
 ```
 ## API's points:
 ```text
