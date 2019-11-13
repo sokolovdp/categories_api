@@ -80,12 +80,26 @@ class CreateCategoriesSerializer:
         return new_category.id
 
     def save_data(self, data, parent_id):
+        """
+            Recursive function to parse and save source dict to DB table
+
+        :param data:  dict with record fields: name, children (list of data)
+        :param parent_id: parent record ID
+        :return: None
+        """
         parent_id = self.create_record(data['name'], parent_id)
         children = data.get('children', [])
         for data in children:
             self.save_data(data, parent_id)
 
     def check_data(self, data):
+        """
+             Recursive function to parse and validate source dict
+             In case of error raises ValidationError exception
+
+        :param data: dict with record fields: name, children (must be a list od data)
+        :return: None
+        """
         if data.get('name') is None:
             raise ValidationError('invalid data, key "name" is missing')
         children = data.get('children', [])
