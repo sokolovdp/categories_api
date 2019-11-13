@@ -130,7 +130,7 @@ class CategoryTests(APITestCase):
     def test_response_data_structure(self):
         """
             Get category data by its ID and check response data structure
-            For id = 3 expected data are:
+            For id = 3 expected response data are:
             {
                 "id": 3,
                 "name": "Category 1.1.1",
