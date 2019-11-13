@@ -64,6 +64,11 @@ SOURCE_DATA = {
 
 class CategoryTests(APITestCase):
 
+    def init_database(self):
+        response = self.client.post('/categories/', SOURCE_DATA, format='json')
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        self.assertEqual(Category.objects.count(), 15)
+
     def test_create_categories_wrong_formats(self):
         """
             Check if validation works
@@ -79,20 +84,15 @@ class CategoryTests(APITestCase):
 
     def test_create_categories(self):
         """
-            Create categories
+            Upload categories into database
         """
-        url = '/categories/'
-        response = self.client.post(url, SOURCE_DATA, format='json')
-        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
-        self.assertEqual(Category.objects.count(), 15)
+        self.init_database()
 
     def test_get_all_categories(self):
         """
             Get category data by its ID
         """
-        response = self.client.post('/categories/', SOURCE_DATA, format='json')
-        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
-        self.assertEqual(Category.objects.count(), 15)
+        self.init_database()
 
         for category_id in range(1, 16):
             url = f'/categories/{category_id}/'
@@ -102,11 +102,9 @@ class CategoryTests(APITestCase):
 
     def test_get_invalid_category_id(self):
         """
-            Get category data by its ID
+            Check if API poperly handle invalid category ids
         """
-        response = self.client.post('/categories/', SOURCE_DATA, format='json')
-        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
-        self.assertEqual(Category.objects.count(), 15)
+        self.init_database()
 
         url = f'/categories/0/'
         response = self.client.get(url, format='json')
@@ -116,5 +114,18 @@ class CategoryTests(APITestCase):
         response = self.client.get(url, format='json')
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
 
+        url = f'/categories/err/'
+        response = self.client.get(url, format='json')
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+
+    def test_check_data_structure(self):
+        """
+            Get category data by its ID
+        """
+        self.init_database()
+
+        url = f'/categories/4/'
+        response = self.client.get(url, format='json')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
 
 
