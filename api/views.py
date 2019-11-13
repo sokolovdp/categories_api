@@ -5,6 +5,8 @@ from rest_framework import status
 
 from .models import Category, CreateCategoriesSerializer, RetrieveCategoriesSerializer
 
+field_names = RetrieveCategoriesSerializer().fields
+
 
 class CategoryViewSet(ViewSet):
     lookup_value_regex = '[0-9]+'
@@ -30,7 +32,6 @@ class CategoryViewSet(ViewSet):
 
     def retrieve(self, request, pk=None):
         categories = Category.relatives.load(pk=pk)
-        field_names = RetrieveCategoriesSerializer().fields
         result = dict((k, v) for k, v in zip(field_names, categories))
         if result['id'] is None:
             return Response({'error': f'wrong category id'}, status=status.HTTP_404_NOT_FOUND)
