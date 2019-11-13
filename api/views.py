@@ -25,7 +25,8 @@ class CategoryViewSet(ViewSet):
                 {'error': f'internal error {repr(e)}'},
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR
             )
-        return Response(None, status.HTTP_201_CREATED)
+        else:
+            return Response(None, status.HTTP_201_CREATED)
 
     def retrieve(self, request, pk=None):
         categories = Category.relatives.load(pk=pk)
