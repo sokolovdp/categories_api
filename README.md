@@ -31,5 +31,5 @@ python manage.py test
 
 ```
 
-## Postman collection to test API
+## Postman collection with API tests
 https://www.getpostman.com/collections/ea2dfb57228b08319c7c
