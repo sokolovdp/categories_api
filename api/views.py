@@ -7,6 +7,7 @@ from .models import Category, CreateCategoriesSerializer, RetrieveCategoriesSeri
 
 
 class CategoryViewSet(ViewSet):
+    lookup_value_regex = '[0-9]+'
 
     def create(self, request):
         serializer = CreateCategoriesSerializer(data=request.data)
