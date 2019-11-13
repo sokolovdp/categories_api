@@ -86,7 +86,7 @@ class CategoryTests(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         self.assertEqual(Category.objects.count(), 15)
 
-    def test_get_categories(self):
+    def test_get_all_categories(self):
         """
             Get category data by its ID
         """
@@ -99,4 +99,22 @@ class CategoryTests(APITestCase):
             response = self.client.get(url, format='json')
             self.assertEqual(response.status_code, status.HTTP_200_OK)
             self.assertEqual(response.data.get("id"), category_id)
+
+    def test_get_invalid_category_id(self):
+        """
+            Get category data by its ID
+        """
+        response = self.client.post('/categories/', SOURCE_DATA, format='json')
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        self.assertEqual(Category.objects.count(), 15)
+
+        url = f'/categories/0/'
+        response = self.client.get(url, format='json')
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+
+        url = f'/categories/16/'
+        response = self.client.get(url, format='json')
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+
+
 
