@@ -118,14 +118,59 @@ class CategoryTests(APITestCase):
         response = self.client.get(url, format='json')
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
 
-    def test_check_data_structure(self):
+    def test_response_data_structure(self):
         """
-            Get category data by its ID
+            Get category data by its ID and check response data structure
+            For id = 3 expected data are:
+            {
+                "id": 3,
+                "name": "Category 1.1.1",
+                "parents": [
+                    {
+                        "id": 2,
+                        "name": "Category 1.1"
+                    },
+                    {
+                        "id": 1,
+                        "name": "Category 1"
+                    }
+                ],
+                "children": [
+                    {
+                        "id": 4,
+                        "name": "Category 1.1.1.1"
+                    },
+                    {
+                        "id": 5,
+                        "name": "Category 1.1.1.2"
+                    },
+                    {
+                        "id": 6,
+                        "name": "Category 1.1.1.3"
+                    }
+                ],
+                "siblings": [
+                    {
+                        "id": 7,
+                        "name": "Category 1.1.2"
+                    }
+                ]
+            }
+
         """
+
         self.init_database()
 
-        url = f'/categories/4/'
+        category_id = 3
+        category_name = "Category 1.1.1"
+        url = f'/categories/{category_id}/'
         response = self.client.get(url, format='json')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+        self.assertEqual(response.data.get("id"), category_id)
+        self.assertEqual(response.data.get("name"), category_name)
+        self.assertEqual(len(response.data.get("parents")), 2)
+        self.assertEqual(len(response.data.get("children")), 3)
+        self.assertEqual(len(response.data.get("siblings")), 1)
 
 
