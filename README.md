@@ -25,7 +25,7 @@ class Category(models.Model):
 ##  Implementation notes
 API using recursive SQL queries returns both all ancestors (parents) and all descendants (children) of an element, plus its siblings (categories with the same parent)
 
-## Tests
+## Unit tests
 ```text
 python manage.py test
 
