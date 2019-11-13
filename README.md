@@ -3,7 +3,7 @@
 ```text
 python manage.py runserver 8000
 ```
-## Model:
+## Model
 ```python
 class Category(models.Model):
     name = models.CharField(max_length=128, unique=True)
@@ -14,7 +14,7 @@ class Category(models.Model):
     relatives = Relatives()
 
 ```
-## API's points:
+## API's points
 ```text
 ​ POST /categories/
 ```
