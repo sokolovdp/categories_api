@@ -1,4 +1,4 @@
-# Demo API based on Django's DRF API services to show implementation of the Tree like structure in SQL database table and AI to create and retrieve data from it
+# Demo API based on Django's DRF API services to show implementation of the Tree like structure in SQL database table and API to create and retrieve data from it
 ## Run application
 ```text
 python manage.py runserver 8000
