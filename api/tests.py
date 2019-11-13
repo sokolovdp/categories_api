@@ -88,6 +88,15 @@ class CategoryTests(APITestCase):
         """
         self.init_database()
 
+    def test_create_duplicated_category(self):
+        """
+            Check API does not allow creating category with the same name
+        """
+        self.init_database()
+        data = {'name': 'Category 1.1.1', 'children': []}
+        response = self.client.post('/categories/', data, format='json')
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
     def test_get_all_categories(self):
         """
             Get category data by its ID
