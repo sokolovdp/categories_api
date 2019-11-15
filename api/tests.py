@@ -1,3 +1,5 @@
+from django.urls import reverse
+
 from rest_framework import status
 from rest_framework.test import APITestCase
 from .models import Category
@@ -65,7 +67,8 @@ SOURCE_DATA = {
 class CategoryTests(APITestCase):
 
     def init_database(self):
-        response = self.client.post('/categories/', SOURCE_DATA, format='json')
+        url = reverse('api:category-list')
+        response = self.client.post(url, SOURCE_DATA, format='json')
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         self.assertEqual(Category.objects.count(), 15)
 
@@ -73,7 +76,7 @@ class CategoryTests(APITestCase):
         """
             Check if API properly validate input data
         """
-        url = '/categories/'
+        url = reverse('api:category-list')
         data = {'test': 'invalid format'}
         response = self.client.post(url, data, format='json')
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
