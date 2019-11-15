@@ -68,12 +68,9 @@ class Category(models.Model):
     objects = models.Manager()
     relatives = Relatives()
 
-    def get_children(self):
-        children = self.children.all()
-        if not children:
-            return Category.objects.none()
-        else:
-            return children
+    def get_siblings(self):
+        siblings = Category.objects.filter(parent_id=self.parent_id)
+        return siblings
 
     def get_parents(self):
         if self.parent is None:
