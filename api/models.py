@@ -68,6 +68,18 @@ class Category(models.Model):
     objects = models.Manager()
     relatives = Relatives()
 
+    def get_children(self):
+        children = self.children.all()
+        if not children:
+            return Category.objects.none()
+        else:
+            return children
+
+    def get_parents(self):
+        if self.parent is None:
+            return Category.objects.none()
+        return Category.objects.filter(pk=self.parent.pk) | self.parent.get_parents()
+
 
 class CreateCategoriesSerializer:
     """

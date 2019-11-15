@@ -31,9 +31,14 @@ class CategoryViewSet(ViewSet):
             return Response(None, status.HTTP_201_CREATED)
 
     def retrieve(self, request, pk=None):
-        categories = Category.relatives.load(pk=pk)
-        result = dict((k, v) for k, v in zip(field_names, categories))
-        if result['id'] is None:
-            return Response({'error': f'wrong category id'}, status=status.HTTP_404_NOT_FOUND)
+        # categories = Category.relatives.load(pk=pk)
+        # result = dict((k, v) for k, v in zip(field_names, categories))
+        # if result['id'] is None:
+        #     return Response({'error': f'wrong category id'}, status=status.HTTP_404_NOT_FOUND)
+        #
+        # return Response(RetrieveCategoriesSerializer(result).data)
 
-        return Response(RetrieveCategoriesSerializer(result).data)
+        category = Category.objects.select_related('parent').prefetch_related('children').get(pk=pk)
+        parents = list(category.get_parents())
+        children = list(category.get_children())
+        return Response(None, status.HTTP_200_OK)
